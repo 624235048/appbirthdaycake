@@ -25,7 +25,7 @@ class Style {
       fontSize: 18.0,
       color: Colors.black,
       fontWeight: FontWeight.bold,
-      fontFamily: 'Lato',
+      fontFamily: 'Bebas',
     ),
   );
   Text showTitleB(String title) => Text(
@@ -42,18 +42,20 @@ class Style {
   Text showTitle(String title) => Text(
     title,
     style: TextStyle(
-        fontSize: 24.0,
+        fontSize: 30,
         color: Colors.pink.shade200,
-        fontWeight: FontWeight.bold),
+        fontWeight: FontWeight.w600,
+        fontFamily: 'Bebas'
+    ),
   );
 
   Text showTitleH2(String title) => Text(
     title,
     style: TextStyle(
-      fontSize: 18.0,
+      fontSize: 15.0,
       color: Colors.pink.shade200,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'Lato',
+      fontWeight: FontWeight.w600,
+      fontFamily: 'Bebas',
     ),
   );
 
@@ -76,8 +78,8 @@ class Style {
     title,
     style: TextStyle(
         fontSize: 14.0,
-        color: Color(0xff222222),
-        fontWeight: FontWeight.bold),
+        color: Color(0xfff6b1c5),
+        fontWeight: FontWeight.w600),
   );
 
 
@@ -125,7 +127,7 @@ class Style {
   TextStyle mainhATitle = TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.bold,
-    color: Colors.blueAccent,
+    color: Colors.green,
   );
   TextStyle mainhPTitle = TextStyle(
     fontSize: 15.0,

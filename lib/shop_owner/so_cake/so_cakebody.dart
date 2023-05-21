@@ -2,6 +2,8 @@ import 'package:appbirthdaycake/config/api.dart';
 import 'package:appbirthdaycake/config/approute.dart';
 import 'package:appbirthdaycake/custumer/model/cake_n_model.dart';
 import 'package:appbirthdaycake/services/network.dart';
+import 'package:appbirthdaycake/style.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 
@@ -11,128 +13,135 @@ class SOCakeBody extends StatefulWidget {
 }
 
 class _SOCakeBodyState extends State<SOCakeBody> {
+  List<Cakens> cakens = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: FutureBuilder<CakeNModel>(
-          future: NetworkService().getAllCakeNDio(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  //padding: EdgeInsets.only(top: 10, bottom: 15),
-                  itemCount: snapshot.data.cakens.length,
+      body: SafeArea(
+        top: true,
+        child: Container(
+          child: FutureBuilder<CakeNModel>(
+            future: NetworkService().getAllCakeNDio(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                cakens = snapshot.data.cakens;
+                return GridView.builder(
+                  padding: EdgeInsets.all(10),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.7,
+                  ),
+                  itemCount: cakens.length,
                   itemBuilder: (context, index) {
-                    var cake = snapshot.data.cakens[index];
+                    var cake = cakens[index];
                     return Material(
                       child: InkWell(
                         onTap: () {
-                          //Navigator.pushNamed(context, AppRoute.CakeDetailRoute,arguments: cake);
                         },
-                        child: Stack(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(40, 5, 25, 10),
-                              height: 280,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.pink[100],
-                                borderRadius: BorderRadius.circular(20),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20)),
+                                  child: Image(
+                                    image: NetworkImage(
+                                        API.CN_IMAGE + cake.cnImages),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(100, 20, 20, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width: 90,
-                                          child: Text(
-                                            cake.cnId.toString(),
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            //mainAxisAlignment: MainAxisAlignment.,
-                                            children: [
-                                              Text(
-                                                'No.' + cake.cnId.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              SizedBox(
-                                                height: 140,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      //
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.delete_forever,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        //
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.edit,
-                                                        color: Colors.indigo,
-                                                      )),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, AppRoute.EditCakeRoute , arguments: cake );
+                                        // โค้ดสำหรับแก้ไขข้อมูล
+                                      },
+                                      icon: Icon(Icons.edit),
+                                      label: Text('Edit'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.pink.shade100,
+                                      ),
+                                    ),
+                                    ElevatedButton.icon(
+                                      onPressed: () =>
+                                        deleteCake(cakens[index]),
+                                        // โค้ดสำหรับลบข้อมูล
+                                      icon: Icon(Icons.delete_forever),
+                                      label: Text(''),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.red.shade400,
+                                        fixedSize: Size(40, 36),
+                                      ),
+                                    ),
                                   ],
-                                ),
+                                )
                               ),
-                            ),
-                            Positioned(
-                              left: 20,
-                              top: 15,
-                              bottom: 15,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image(
-                                  width: 200,
-                                  image: NetworkImage(
-                                      API.CN_IMAGE + cake.cnImages),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
-                  });
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
+                  },
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
         ),
+      ),
+    );
+  }
+  Future<Null> deleteCake(Cakens cakens) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Style().showTitleH2T(
+            'คุณต้องการลบเค้กก้อนที่ ${cakens.cnId} \tใช่ไหม ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  String url =
+                      '${API.BASE_URL}/flutterapi/src/DeleteCakeWhereorderId.php?isAdd=true&cn_id=${cakens.cnId}';
+                  await Dio().get(url).then((value) {
+                    Navigator.pop(context);
+                    //readWaterProduct();
+                  });
+                },
+                child: Text(
+                  'ยืนยัน',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'ยกเลิก',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

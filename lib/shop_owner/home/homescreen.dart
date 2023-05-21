@@ -1,4 +1,9 @@
+import 'package:appbirthdaycake/custumer/HomeScreen/logout.dart';
+import 'package:appbirthdaycake/custumer/HomeScreen/profile.dart';
 import 'package:appbirthdaycake/shop_owner/home/homebody_so.dart';
+import 'package:appbirthdaycake/shop_owner/home/profileso.dart';
+import 'package:appbirthdaycake/shop_owner/order/order_cakepage.dart';
+import 'package:appbirthdaycake/shop_owner/order/order_detail.dart';
 import 'package:flutter/material.dart';
 
 class HomeShopOwner extends StatefulWidget {
@@ -10,6 +15,8 @@ class _HomeShopOwnerState extends State<HomeShopOwner> {
   int currentIndex = 0;
   final screens = [
     HomeBodyShopOwner(),
+    OrderPage(),
+    ProFileShopPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,10 +47,10 @@ class _HomeShopOwnerState extends State<HomeShopOwner> {
               backgroundColor: Colors.pink[200]),
           BottomNavigationBarItem(
               icon: Icon(Icons.apps_rounded),
-              label: 'Cart',
+              label: 'Confirm',
               backgroundColor: Colors.pink[200]),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.article_outlined),
               label: 'Profile',
               backgroundColor: Colors.pink[200]),
         ],

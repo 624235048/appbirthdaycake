@@ -60,7 +60,7 @@ class _HomeBodyShopOwnerState extends State<HomeBodyShopOwner> {
                 children: [
                   InkWell(
                     onTap: () {
-                      //Navigator.pushNamed(context, routeName);
+                      Navigator.pushNamed(context, AppRoute.HomeOrderRoute);
                     },
                     child: Container(
                       child: Padding(
@@ -78,7 +78,7 @@ class _HomeBodyShopOwnerState extends State<HomeBodyShopOwner> {
                                 Column(
                                   children: [
                                     Text(
-                                      'Custumer Order',
+                                      'OrderCake',
                                       style: TextStyle(
                                           fontFamily: 'Bebas',
                                           fontSize: 20,

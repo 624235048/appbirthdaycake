@@ -32,6 +32,14 @@ class _SOCakePageState extends State<SOCakePage> {
           Navigator.pushNamed(context, AppRoute.HomeShopOwnerRoute);
         },
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.add,color: Colors.pink[100]),
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoute.AddCakeRoute);
+          },
+        ),
+      ],
     );
   }
 }

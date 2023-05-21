@@ -2,6 +2,7 @@ import 'package:appbirthdaycake/custumer/HomeScreen/accountwidget.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/app_icon.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/big_text.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/logout.dart';
+import 'package:appbirthdaycake/custumer/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  List<CUsertable> cUsertable = [];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

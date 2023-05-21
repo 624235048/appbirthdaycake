@@ -1,4 +1,6 @@
+import 'package:appbirthdaycake/config/api.dart';
 import 'package:appbirthdaycake/config/approute.dart';
+import 'package:appbirthdaycake/custumer/model/Cake_size_model.dart';
 import 'package:appbirthdaycake/custumer/model/cake_n_model.dart';
 import 'package:appbirthdaycake/custumer/model/cart_model.dart';
 import 'package:appbirthdaycake/widgets/dialog.dart';
@@ -16,6 +18,7 @@ class CartBody extends StatefulWidget {
 }
 
 class _CartBodyState extends State<CartBody> {
+  List<CakeSize> cakesikeModels = [];
   List<CartModel> cartModels = [];
   List<List<String>> listgasids = [];
   List<int> listamounts = [];
@@ -26,45 +29,43 @@ class _CartBodyState extends State<CartBody> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     readSQLite();
   }
-
   Future<Null> readSQLite() async {
     var object = await SQLiteHlper().readAllDataFormSQLite();
     print('object length ==> ${object.length}');
+    int newTotal = 0; // สร้างตัวแปรใหม่เพื่อเก็บค่า total ที่ถูกคำนวณใหม่
     if (object.length != 0) {
       for (var model in object) {
         String sumString = model.sum;
         int sumInt = int.parse(sumString);
-        setState(() {
-          status = false;
-          cartModels = object;
-          total = total + sumInt;
-
-          // gas_id = model.gas_id;
-          // amount = model.amount;
-        });
+        newTotal += sumInt; // เพิ่มราคาสินค้าลงในตัวแปร newTotal
       }
-    } else {
-      setState(() {
-        status = true;
-      });
     }
+    setState(() {
+      status = object.isEmpty; // ถ้า object ว่างเปล่าก็ให้ status เป็น true
+      cartModels = object;
+      total = newTotal; // กำหนดค่า total ให้เท่ากับ newTotal
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   title: Text(
-      //     'Cart',
-      //     style: TextStyle(color: Colors.pink[200]),
-      //   ),
-      //   elevation: 0,
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.pink[100],
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoute.HomeRoute);
+          },
+        ),
+      ),
       body: status
           ? Center(
               child: Container(
@@ -85,15 +86,19 @@ class _CartBodyState extends State<CartBody> {
           children: <Widget>[
             buildmaintitleshop(),
             const Divider(
-              color: Colors.black26,
+              color: Colors.pinkAccent,
               height: 30,
               thickness: 5,
             ),
             buildheadtitle(),
-            buildlistWater(),
+            buildlistCake(),
             const Divider(
               //height: 50,
-              thickness: 10,
+              color: Colors.pinkAccent,
+              thickness: 5,
+            ),
+            SizedBox(
+              height: 10,
             ),
             buildTotal(),
             Style().mySizebox(),
@@ -109,46 +114,44 @@ class _CartBodyState extends State<CartBody> {
     DateTime dateTime = DateTime.now();
     // print(dateTime.toString());
     String order_date_time = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+    String distance = cartModels[0].distance;
+    String transport = cartModels[0].transport;
+    String pickupDate = cartModels[0].cake_date;
+    String imgcakes = cartModels[0].cake_img;
     List<String> cake_ids = [];
-    List<String> imgcakes = [];
-    List<String> texts = [];
     List<String> sizes = [];
+    List<String> texts = [];
     List<String> prices = [];
     List<String> amounts = [];
     List<String> sums = [];
 
     for (var model in cartModels) {
-      cake_ids.add(model.cake_id);
-      imgcakes.add(model.cake_img);
       texts.add(model.cake_text);
+      cake_ids.add(model.cake_id);
       prices.add(model.price);
       sizes.add(model.cake_size);
       amounts.add(model.amount);
       sums.add(model.sum);
+
     }
+
     String cake_id = cake_ids.toString();
-    String imgcake = imgcakes.toString();
-    String text = texts.toString();
     String price = prices.toString();
     String size = sizes.toString();
     String amount = amounts.toString();
-    String sum = sums.toString();
+    String count = sums.toString();
+    String text = texts.toString();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString('id');
-    String user_name = preferences.getString('Name');
-    print(
-        'orderDateTime == $order_date_time ,user_id ==> $user_id,user_name ==> $user_name ');
-    print(
-        'cake_id ==> $cake_ids,imgcake ==>$imgcake,text ==> $Text,size ==> $size, price ==> $price , amount ==> $amount , sum ==> $sum');
+    String user_name = preferences.getString('name');
 
     String url =
-        'http://192.168.1.34:8080/flutterapi/addOrder.php?isAdd=true&order_date_time=$order_date_time&user_id=$user_id&user_name=$user_name&cake_id=$cake_id&imgcake=$imgcake&text=$text&size=$size&price=$price&amount=$amount&sum=$sum&payment_status=payondelivery&status=userorder';
+        '${API.BASE_URL}/flutterapi/src/addOrder.php?isAdd=true&order_date_time=$order_date_time&user_id=$user_id&user_name=$user_name&distance=$distance&transport=$transport&cake_id=$cake_id&imgcake=$imgcakes&text=$text&size=$size&price=$price&amount=$amount&sum=$count&pickup_date=$pickupDate&payment_status=userorder&status=ชำระเงินปลายทาง';
 
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
-        // updateQtyGas(amount, gas_id);
+        //updateQtyGas(amount, gas_id);
         clearOrderSQLite();
-
         //notificationtoShop(user_name);
       } else {
         normalDialog(context, 'ไม่สามารถสั่งซื้อได้กรุณาลองใหม่');
@@ -179,58 +182,61 @@ class _CartBodyState extends State<CartBody> {
       margin: EdgeInsets.only(top: 16, bottom: 16, left: 16),
       child: Column(
         children: <Widget>[
-          SizedBox(
-            height: 50,
-          ),
           Row(
             children: [
-              Style().showTitle('Shoppingcart',),
+              Style().showTitle('Shoppingcart'),
             ],
           ),
-          //Style().mySizebox(),
+          Style().mySizebox(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              //Style()
-              //.showTitleH3('ระยะทาง : ${cartModels[0].distance} กิโลเมตร'),
-              // Style().showTitleH3('ค่าจัดส่ง : ${cartModels[0].transport} บาท'),
+               Style().showTitleH3('วันที่นัดรับ : ${cartModels[0].cake_date} '),
             ],
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     MyStyle().showTitleH3('ค่าจัดส่ง ${cartModels[0].transport}'),
-          //   ],
-          // ),
+           // Row(
+           //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+           //   children: [
+           //     MyStyle().showTitleH3('ค่าจัดส่ง ${cartModels[0].transport}'),
+           //   ],
+           // ),
         ],
       ),
     );
   }
 
   Widget buildheadtitle() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Style().showTitleH2('จำนวน'),
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.only(bottom: 10),
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Style().showTitleH2('จำนวน'),
+              ),
+              Expanded(
+                //flex: 1,
+                child: Style().showTitleH2('ขนาด'),
+              ),
+              Expanded(
+                //flex: 1,
+                child: Style().showTitleH2('ข้อความ'),
+              ),
+              // Expanded(
+              //   //flex: 1,
+              //   child: Style().showTitleH2('ราคา'),
+              // ),
+              Expanded(
+                flex: 1,
+                child: Style().showTitleH2('รวม'),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 1,
-            child: Style().showTitleH2('ขนาด'),
-          ),
-          Expanded(
-            flex: 1,
-            child: Style().showTitleH2('ข้อความ'),
-          ),
-          Expanded(
-            flex: 1,
-            child: Style().showTitleH2('รวม'),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -241,16 +247,15 @@ class _CartBodyState extends State<CartBody> {
         Container(
           margin: EdgeInsets.only(bottom: 10, right: 10),
           width: 160,
-          child: RaisedButton.icon(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              primary: Colors.pink.shade200,
             ),
-            color: Colors.blueAccent,
             onPressed: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //   builder: (context) => null,
-              // );
-              //Navigator.pushNamed(context, AppRoute.confirmpayment).then((value) => readSQLite());
+              Navigator.pushNamed(context, AppRoute.PeymentRoute);
             },
             label: Text(
               'ชำระเงินล่วงหน้า',
@@ -273,11 +278,13 @@ class _CartBodyState extends State<CartBody> {
         Container(
           margin: EdgeInsets.only(bottom: 10, right: 10),
           width: 160,
-          child: RaisedButton.icon(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              primary: Colors.pink.shade200,
             ),
-            color: Colors.indigoAccent,
             onPressed: () {
               orderThread();
             },
@@ -305,7 +312,7 @@ class _CartBodyState extends State<CartBody> {
     );
   }
 
-  Widget buildlistWater() => ListView.builder(
+  Widget buildlistCake() => ListView.builder(
         shrinkWrap: true,
         physics: ScrollPhysics(),
         itemCount: cartModels.length,
@@ -327,38 +334,49 @@ class _CartBodyState extends State<CartBody> {
                     style: Style().mainhATitle,
                   ),
                 ),
+
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    cartModels[index].cake_id,
-                    style: Style().mainh23Title,
-                  ),
+                  child: Text(cartModels[index].cake_size ?? ''),
                 ),
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    'ฺ  ',
-                    style: Style().mainh23Title,
+                  child: Text(cartModels[index].cake_text ?? ''
+                    ,
+                    //style: Style().mainh23Title,
                   ),
                 ),
+                // Expanded(
+                //   flex: 2,
+                //   child: Text(cartModels[index].price ?? ''
+                //     //style: Style().mainh23Title,
+                //   ),
+                // ),
                 Expanded(
                   flex: 1,
                   child: Text(
-                    ' ${cartModels[index].sum}ฺ THB',
+                    ' ${cartModels[index].price}ฺ THB',
                     style: Style().mainh23Title,
                   ),
+                ),
+                SizedBox(
+                  width: 5,
                 ),
                 Expanded(
                   flex: 1,
                   child: IconButton(
                     color: Colors.red,
-                    icon: Icon(Icons.delete_forever),
+                    icon: Icon(Icons.cancel_presentation_sharp),
                     onPressed: () async {
                       int id = cartModels[index].id;
+                      int price = int.parse(cartModels[index].price); // ราคาของสินค้าที่จะลบ
                       print('You Click delete id = $id');
                       await SQLiteHlper().deleteDataWhereId(id).then(
                         (value) {
                           print('delete Success id =$id');
+                          setState(() {
+                            total -= price; // ลบราคาสินค้าที่ถูกลบออกจากค่า total
+                          });
                           readSQLite();
                         },
                       );

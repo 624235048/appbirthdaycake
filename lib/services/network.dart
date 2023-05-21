@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:appbirthdaycake/config/api.dart';
+import 'package:appbirthdaycake/custumer/model/Cake_size_model.dart';
 import 'package:appbirthdaycake/custumer/model/cake_n_model.dart';
+import 'package:appbirthdaycake/custumer/model/order_model.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:http/http.dart' as http;
 
 
 class NetworkService {
@@ -56,5 +59,30 @@ class NetworkService {
     }
     throw Exception('Network failed');
   }
-  
+
+  Future<List<CakeSize>> getAllCakeSizeDio() async {
+    var url = API.BASE_URL + API.CAKE_SIZE;
+    print('url getAllCakeSizeDio() = ' + url);
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      print(response.body);
+      var jsonData = json.decode(response.body)['cake_size']; // แก้ไขตรงนี้เพื่อรับข้อมูล JSON ในรูปแบบที่ถูกต้อง
+      return CakeSize.fromJsonList(jsonData);
+    }
+    throw Exception('Network failed');
+  }
+
+  Future<OrderModel> getAllOrderDio() async {
+    var url = API.BASE_URL + API.Order;
+    print('url getAllOrderDio() = ' + url);
+    final response = await _dio.get(url);
+    if (response.statusCode == 200) {
+      final jsonData = response.data as Map<String, dynamic>;
+      return OrderModel.fromJson(jsonData);
+    }
+    throw Exception('Network failed');
+  }
+
+
+
 }

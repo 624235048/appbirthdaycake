@@ -8,7 +8,10 @@ class CartModel {
   String amount;
   String price;
   String sum;
-  String time;
+  String pickup_date;
+  String distance;
+  String transport;
+
 
   CartModel(
       {this.id,
@@ -20,7 +23,10 @@ class CartModel {
       this.price,
       this.amount,
       this.sum,
-      this.time});
+      this.pickup_date,
+      this.distance,
+      this.transport
+      });
 
   CartModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -32,7 +38,9 @@ class CartModel {
     amount = json['amount'];
     price = json['price'];
     sum = json['sum'];
-    time = json['time'];
+    pickup_date = json['pickup_date'];
+    distance = json['distance'];
+    transport =json['transport'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,7 +54,9 @@ class CartModel {
     data['amount'] = this.amount;
     data['price'] = this.price;
     data['sum'] = this.sum;
-    data['time'] = this.time;
+    data['pickup_date'] = this.pickup_date;
+    data['distance'] = this.distance;
+    data['transport'] = this.transport;
     return data;
   }
 }

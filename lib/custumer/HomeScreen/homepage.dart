@@ -1,14 +1,18 @@
 import 'package:appbirthdaycake/custumer/HomeScreen/homebody.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/profile.dart';
 import 'package:appbirthdaycake/custumer/shopping/cart_page.dart';
-import 'package:appbirthdaycake/shop_owner/home/homebody_so.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:appbirthdaycake/custumer/shopping/history_page.dart';
 
-import '../../widgets/dialog.dart';
+import 'package:flutter/material.dart';
+
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
+
+
+
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,14 +21,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String nameUser;
 
+
   int currentIndex = 0;
   final screens = [
     HomeBodyPage(),
     CartPage(),
+    HistoryPage(),
     AccountPage(),
   ];
 
-  //
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +63,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart_outlined),
                 label: 'Cart',
+                backgroundColor: Colors.pink[200]),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history_toggle_off),
+                label: 'History',
                 backgroundColor: Colors.pink[200]),
             BottomNavigationBarItem(
                 icon: Icon(Icons.person),

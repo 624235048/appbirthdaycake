@@ -16,6 +16,9 @@ class SQLiteHlper {
   final String amount = 'amount';
   final String price = 'price';
   final String sum = 'sum';
+  final String pickup_date = 'pickup_date';
+  final String distance = 'distance';
+  final String transport = 'transport';
 
   
   SQLiteHlper() {
@@ -25,7 +28,7 @@ class SQLiteHlper {
   Future<Null> initDatabase() async {
     await openDatabase(join(await getDatabasesPath(), nameDatabase),
         onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableDatabase ($idColumn INTEGER PRIMARY KEY ,$cake_id TEXT ,$cake_size TEXT,$cake_img TEXT,$cake_date TEXT,$cake_text TEXT, $price TEXT, $amount TEXT,$sum TEXT)'),
+            'CREATE TABLE $tableDatabase ($idColumn INTEGER PRIMARY KEY ,$cake_id TEXT ,$cake_size TEXT,$cake_img TEXT,$cake_date TEXT,$cake_text TEXT, $price TEXT, $amount TEXT,$sum TEXT,$pickup_date TEXT ,$distance TEXT,$transport TEXT)'),
         version: version);
   }
 

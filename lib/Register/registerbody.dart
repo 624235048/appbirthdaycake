@@ -1,3 +1,5 @@
+import 'package:appbirthdaycake/config/api.dart';
+import 'package:appbirthdaycake/widgets/dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -31,7 +33,7 @@ class _RegisterBodyState extends State<RegisterBody> {
   @override
   void initState() {
     super.initState();
-    //checkPermission();
+    checkPermission();
     findlatlng();
   }
 
@@ -46,165 +48,193 @@ class _RegisterBodyState extends State<RegisterBody> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 110,
-              ),
-              Container(
-                child: Center(
-                  child: Text(
-                    'Create Account',
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: 'Oleo', fontSize: 40),
-                  ),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          behavior: HitTestBehavior.opaque,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 110,
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Name',
-                          icon: Icon(Icons.person_add_alt)),
+                Container(
+                  child: Center(
+                    child: Text(
+                      'Create Account',
+                      style: TextStyle(
+                          color: Colors.white, fontFamily: 'Oleo', fontSize: 40),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Username',
-                          icon: Icon(Icons.lock)),
-                    ),
-                  ),
+                SizedBox(
+                  height: 30,
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'password',
-                          icon: Icon(Icons.email)),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _phoneController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Phone',
-                          icon: Icon(Icons.phone)),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Address',
-                          icon: Icon(Icons.account_balance)),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: GestureDetector(
-                  onTap: (){
-                    uploadAndInsertData().then((value) => print("สำเร็จ"));
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Container(
-                    padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                        color: Colors.pink[100],
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Center(
-                      child: Text(
-                        'Join Us',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
+                      color: Colors.grey[50],
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Name',
+                            icon: Icon(Icons.person_add_alt)),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Username',
+                            icon: Icon(Icons.email)),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'password',
+                            icon: Icon(Icons.lock)),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextFormField(
+                        controller: _phoneController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Phone',
+                            icon: Icon(Icons.phone)),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextFormField(
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Address',
+                            icon: Icon(Icons.account_balance)),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      uploadAndInsertData().then((value) => print("สำเร็จ"));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.pink[100],
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(
+                        child: Text(
+                          'Join Us',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+  Future<Null> checkPermission() async {
+    bool locationService;
+    LocationPermission locationPermission;
+
+    locationService = await Geolocator.isLocationServiceEnabled();
+    if (locationService) {
+      print('Sevice Location Open');
+      locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission == await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.deniedForever) {
+          normalDialog(context, 'ไม่อนุญาติแชร์ Location โปรดแชร์ Location');
+        } else {}
+      } else {
+        if (locationPermission == LocationPermission.deniedForever) {
+          normalDialog(context, 'ไม่อนุญาติแชร์ Location โปรดแชร์ Location');
+        } else {}
+      }
+    } else {
+      print('Service Location Close');
+      normalDialog(context,
+          'Location service ปิดอยู่ ? กรุณาเปิดตำแหน่งของท่านก่อนใช้บริการค่ะ');
+    }
   }
 
   Future<Null> findlatlng() async {
@@ -226,13 +256,13 @@ class _RegisterBodyState extends State<RegisterBody> {
     var password = _passwordController.text;
     // print(" name == ${name} ${address}");
     String apipath =
-        'http://192.168.1.34:8080/flutterapi/src/register.php?isAdd=true&Name=$name&User=$user&Password=$password&chooseType=Customer&Phone=$phone&Address=$address&lat=$lat&lng=$lng&token=null';
+        '${API.BASE_URL}/flutterapi/src/register.php?isAdd=true&Name=$name&User=$user&Password=$password&chooseType=Customer&Phone=$phone&Address=$address&lat=$lat&lng=$lng&token=null';
 
     await Dio().get(apipath).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);
       } else {
-        //normalDialog(context,"ไม่สำเร็จ");
+        normalDialog(context,"ไม่สำเร็จ");
       }
     });
   }

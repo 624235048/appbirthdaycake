@@ -11,7 +11,7 @@ Future<void> normalDialog(BuildContext context, String message) async {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            FlatButton(
+            ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 child: BigText(
                   text: 'OK',
@@ -35,7 +35,7 @@ Future<void> normalDialog2(
           leading: Image.asset('assets/images/order_ss.jpg'),
           title: Text(
             title,
-            style: TextStyle(fontFamily: 'Lato', fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: 'Lato', fontWeight: FontWeight.w600,color: Colors.pink.shade100),
           ),
           subtitle: Text(message),
         ),
@@ -44,7 +44,7 @@ Future<void> normalDialog2(
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            FlatButton(
+            ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'OK',

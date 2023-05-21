@@ -205,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
     var password = _passwordController.text;
 
     String url =
-        'http://192.168.1.34:8080/flutterapi/src/getUserWhereUser.php?isAdd=true&User=$email';
+        '${API.BASE_URL}/flutterapi/src/getUserWhereUser.php?isAdd=true&User=$email';
     try {
       Response response = await Dio().get(url);
       //print('res = $response');
@@ -221,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
           if (chooseType == 'Customer') {
             RoutetoService(userModel);
             Navigator.pushNamedAndRemoveUntil(context, AppRoute.HomeRoute, (route) => false);
-            } else if (chooseType == 'Employee') {
+            } else if (chooseType == 'ShopOwner') {
             RoutetoService(userModel);
             Navigator.pushNamedAndRemoveUntil(context, AppRoute.HomeShopOwnerRoute, (route) => false);
           } else {
@@ -237,9 +237,6 @@ class _LoginPageState extends State<LoginPage> {
   }
   Future<Null> RoutetoService( CUsertable userModel) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('id', userModel.id);
-    preferences.setString('chooseType', userModel.chooseType);
-    preferences.setString('name', userModel.name);
     preferences.setString(API().keyId, userModel.id);
     preferences.setString(API().keyType, userModel.chooseType);
     preferences.setString(API().keyName, userModel.name);
