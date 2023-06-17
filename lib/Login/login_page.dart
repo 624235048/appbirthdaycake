@@ -7,7 +7,10 @@ import 'package:appbirthdaycake/custumer/model/usermodel.dart';
 import 'package:appbirthdaycake/widgets/dialog.dart';
 import 'package:appbirthdaycake/services/network.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,11 +25,22 @@ class _LoginPageState extends State<LoginPage> {
 
   var _passwordController = TextEditingController();
 
+  String tokenId;
+
   @override
   void dispose() {
     _usernameController?.dispose();
     _passwordController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.instance.getToken().then((token) {
+      tokenId = token.toString();
+      print('FCM Token: $tokenId');
+    });
   }
 
   @override
@@ -80,11 +94,12 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _usernameController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          icon: Icon(
+                            icon: Icon(
                               Icons.person,
                               color: Colors.pink[100],
                             ),
-                            border: InputBorder.none, hintText: 'Username'),
+                            border: InputBorder.none,
+                            hintText: 'Username'),
                       ),
                     ),
                   ),
@@ -117,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.pink[100],
                             ),
                             suffixIcon: IconButton(
-                              color: Colors.pink[100],
+                                color: Colors.pink[100],
                                 icon: isHidden
                                     ? Icon(Icons.visibility_off)
                                     : Icon(Icons.visibility),
@@ -136,20 +151,10 @@ class _LoginPageState extends State<LoginPage> {
                     final username = _usernameController.text;
                     final password = _passwordController.text;
                     checkAuthen();
-                    // final username = _usernameController.text;
-                    // final password = _passwordController.text;
-                    // final message = await NetworkService().validateUserLoginDio(username, password);
-                    // print(message);
-                    // if (message != 'failed') {
-                    //   print('login success');
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setString(AppSetting.userNameSetting, username);
-                      prefs.setString(AppSetting.passwordSetting, password);
-                    //
-                    //   Navigator.pushNamed(context, AppRoute.HomeRoute);
-                    // }else{
-                    //   print('login failed');
-                    //  }
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setString(AppSetting.userNameSetting, username);
+                    prefs.setString(AppSetting.passwordSetting, password);
                   },
                   child: Text('Login',
                       style: TextStyle(
@@ -200,12 +205,11 @@ class _LoginPageState extends State<LoginPage> {
   void togglePasswordVisibility() => setState(() => isHidden = !isHidden);
 
   Future<Null> checkAuthen() async {
-
-    var email =   _usernameController.text;
+    var email = _usernameController.text;
     var password = _passwordController.text;
-
     String url =
         '${API.BASE_URL}/flutterapi/src/getUserWhereUser.php?isAdd=true&User=$email';
+
     try {
       Response response = await Dio().get(url);
       //print('res = $response');
@@ -220,28 +224,77 @@ class _LoginPageState extends State<LoginPage> {
           String chooseType = userModel.chooseType;
           if (chooseType == 'Customer') {
             RoutetoService(userModel);
-            Navigator.pushNamedAndRemoveUntil(context, AppRoute.HomeRoute, (route) => false);
-            } else if (chooseType == 'ShopOwner') {
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppRoute.HomeRoute, (route) => false);
+          } else if (chooseType == 'ShopOwner') {
             RoutetoService(userModel);
-            Navigator.pushNamedAndRemoveUntil(context, AppRoute.HomeShopOwnerRoute, (route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppRoute.HomeShopOwnerRoute, (route) => false);
           } else {
             print('Error!');
           }
         } else {
-          print( 'Password ผิด กรุณาลองใหม่อีกครั้ง ค่ะ');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Password ผิด กรุณาลองใหม่อีกครั้ง"),
+                actions: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors
+                          .pink.shade100, // สีปุ่มเป็นสีชมพู
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+          print('Password ผิด กรุณาลองใหม่อีกครั้ง ค่ะ');
         }
       }
     } catch (e) {
       normalDialog(context, 'Password ผิด กรุณาลองใหม่อีกครั้ง ค่ะ');
     }
   }
-  Future<Null> RoutetoService( CUsertable userModel) async {
+
+  Future<Null> RoutetoService(CUsertable userModel) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(API().keyId, userModel.id);
     preferences.setString(API().keyType, userModel.chooseType);
     preferences.setString(API().keyName, userModel.name);
-
+    await addTokenToUser(tokenId);
   }
 
+  Future<void> updateToken() async {
+    // ติดตั้ง OneSignal
+    OneSignal.shared.setAppId("777efcf3-1984-4cbd-bc48-e63b4db352c3");
+    // กำหนดขอบเขตการใช้งาน OneSignal
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      // ตอบสนองเมื่อผู้ใช้เปิดการแจ้งเตือน
+    });
 
+    // รับข้อมูลของอุปกรณ์
+    await OneSignal.shared.getDeviceState().then((deviceState) {
+      // เรียกใช้งาน Token ของผู้ใช้
+      String token = deviceState?.pushToken;
+      print("OneSignal Token: $token");
+      // เรียกใช้ฟังก์ชันเพื่อเพิ่ม Token ในฐานข้อมูลผู้ใช้
+      addTokenToUser(token);
+    });
+  }
+
+  Future <void> addTokenToUser(String tokenId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String user_id = preferences.getString('id');
+    String url =
+        '${API.BASE_URL}/flutterapi/src/updateUserToken.php?isAdd=true&id=$user_id&Token=$tokenId';
+
+    await Dio().get(url).then((value) => print('Token added successfully $user_id'));
+  }
 }

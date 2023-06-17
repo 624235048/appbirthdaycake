@@ -44,11 +44,11 @@ Future<void> normalDialog2(
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            ElevatedButton(
+            TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'OK',
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.pink.shade300),
                 )),
           ],
         )

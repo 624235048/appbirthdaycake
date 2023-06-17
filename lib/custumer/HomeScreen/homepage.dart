@@ -1,7 +1,10 @@
 import 'package:appbirthdaycake/custumer/HomeScreen/homebody.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/profile.dart';
+import 'package:appbirthdaycake/custumer/HomeScreen/profile_page.dart';
+import 'package:appbirthdaycake/custumer/shopping/cart_order.dart';
 import 'package:appbirthdaycake/custumer/shopping/cart_page.dart';
 import 'package:appbirthdaycake/custumer/shopping/history_page.dart';
+import 'package:appbirthdaycake/custumer/shopping/homehistory.dart';
 
 import 'package:flutter/material.dart';
 
@@ -25,9 +28,10 @@ class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   final screens = [
     HomeBodyPage(),
+    //CartOrderPage(),
     CartPage(),
-    HistoryPage(),
-    AccountPage(),
+    HomeHistoryPage(),
+    ProfilePage(),
   ];
 
 

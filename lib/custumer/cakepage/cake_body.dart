@@ -38,6 +38,7 @@ class CakeBody extends StatelessWidget {
                               arguments: cake);
                         },
                         child: Card(
+                          color: Colors.pink.shade50,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -53,6 +54,14 @@ class CakeBody extends StatelessWidget {
                                         API.CN_IMAGE + cake.cnImages),
                                     fit: BoxFit.cover,
                                   ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text('ชื่อเค้ก : '+ cake.cnCakename),
+                                  ],
                                 ),
                               ),
                               // Padding(

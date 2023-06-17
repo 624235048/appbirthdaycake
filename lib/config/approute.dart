@@ -15,12 +15,16 @@ import 'package:appbirthdaycake/shop_owner/home/addcake_page.dart';
 import 'package:appbirthdaycake/shop_owner/home/editcake_page.dart';
 import 'package:appbirthdaycake/shop_owner/home/homescreen.dart';
 import 'package:appbirthdaycake/shop_owner/order/home_shop.dart';
-import 'package:appbirthdaycake/shop_owner/order/order_cakepage.dart';
+import 'package:appbirthdaycake/shop_owner/order/mapdelivery.dart';
+import 'package:appbirthdaycake/shop_owner/order/order_cakecomfrim.dart';
 import 'package:appbirthdaycake/shop_owner/order/order_delivery.dart';
 import 'package:appbirthdaycake/shop_owner/order/order_detail.dart';
 import 'package:appbirthdaycake/shop_owner/order/shop_order.dart';
+import 'package:appbirthdaycake/shop_owner/signature/signature_page.dart';
 import 'package:appbirthdaycake/shop_owner/so_cake/so_cakepage.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../custumer/HomeScreen/Editmap.dart';
 
 class AppRoute{
   static const LoginRoute = "Login";
@@ -46,6 +50,9 @@ class AppRoute{
   static const EditCakeRoute = "Editcake";
   static const HomeOrderRoute = "HomeOrder";
   static const OrderDeriveryRoute = "OrderDerivery";
+  static const SignatureRoute = "Signature";
+  static const MapDeliveryRoute = "MapDelivery";
+  static const EditLatLng = "EditLatLng";
 
   final _route = <String, WidgetBuilder>{
     LoginRoute : (context) => LoginPage(),
@@ -69,6 +76,9 @@ class AppRoute{
     EditCakeRoute : (context) => EditCakePage(),
     HomeOrderRoute : (context) => HomeShopPage(),
     OrderDeriveryRoute : (context) => OrderliveryPage(),
+    SignatureRoute : (context) => SignaturePage(),
+    MapDeliveryRoute : (context) => FollowMapCustomerPage(),
+    EditLatLng : (context) => EditMapPage(),
   };
   get getAll => _route;
 }

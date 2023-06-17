@@ -29,6 +29,8 @@ class CakeNModel {
 
 class Cakens {
   int cnId;
+  String cnCakename;
+  String cnDesc;
   String cnPrice;
   String cnImages;
   int sizeId;
@@ -36,6 +38,8 @@ class Cakens {
 
   Cakens(
       { this.cnId,
+        this.cnCakename,
+        this.cnDesc,
         this.cnPrice,
         this.cnImages,
         this.sizeId,
@@ -43,6 +47,8 @@ class Cakens {
 
   Cakens.fromJson(Map<String, dynamic> json) {
     cnId = json['cn_id'];
+    cnCakename = json['cn_cakename'];
+    cnDesc = json['cn_desc'];
     cnPrice = json['cn_price'];
     cnImages = json['cn_images'];
     sizeId = json['size_id'];
@@ -53,6 +59,8 @@ class Cakens {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['cn_id'] = this.cnId;
+    data['cn_cakename'] = this.cnCakename;
+    data['cn_desc'] = this.cnDesc;
     data['cn_price'] = this.cnPrice;
     data['cn_images'] = this.cnImages;
     data['size_id'] = this.sizeId;

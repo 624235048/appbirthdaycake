@@ -2,13 +2,12 @@ import 'package:appbirthdaycake/Login/login_page.dart';
 import 'package:appbirthdaycake/config/approute.dart';
 import 'package:appbirthdaycake/custumer/HomeScreen/homepage.dart';
 import 'package:appbirthdaycake/shop_owner/home/homescreen.dart';
-import 'package:appbirthdaycake/shop_owner/signature/signature_page.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:appbirthdaycake/config/appsetting.dart';
-
 import 'config/api.dart';
-import 'custumer/shopping/shopcart.dart';
+
 
 class MyApp extends StatelessWidget {
 
@@ -18,10 +17,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: AppRoute().getAll,
       theme: ThemeData(primaryColor: Colors.pink.shade100),
+      builder: (context, child) => ResponsiveWrapper.builder(
+        BouncingScrollWrapper.builder(context, child),
+        breakpoints: [
+          ResponsiveBreakpoint.resize(240,name: MOBILE),
+          ResponsiveBreakpoint.resize(650,name: TABLET),
+        ]
+      ),
       home:
-      //HomeShopOwner()
-      //ShopcartPage()
-     // SignaturePage()
       FutureBuilder(
         future: SharedPreferences.getInstance(),
         builder: (context, snapshot) {

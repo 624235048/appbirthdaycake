@@ -83,6 +83,49 @@ class NetworkService {
     throw Exception('Network failed');
   }
 
+  Future<void> sendNotification(String token, String title, String body) async {
+    final url = 'https://fcm.googleapis.com/fcm/send';
+    final headers = {
+      'Authorization': 'key=AAAA1e3gV_0:APA91bG5tQl8m1ucQOVduUpxNjK9SI1am1zPDuyWMFMPXILKftJN_UfL8VWuDQdtBaVeOU1bqlmbJxoSNk9PYlbIVPJA_XnaSVS22GUe8sHH5EYxuHbsjxKcL9qBXFgq1FM6xdVW6wKy',
+      'Content-Type': 'application/json',
+    };
+
+    final msg = {
+      'body': body,
+      'title': title,
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'sound': 'default',
+      'content_available': 'true',
+      'priority': 'high',
+    };
+
+    final data = {
+      'body': body,
+      'title': title,
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'sound': 'default',
+      'content_available': 'true',
+      'priority': 'high',
+    };
+
+    final fields = {
+      'to': token,
+      'notification': msg,
+      'data': data,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(fields),
+    );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification');
+    }
+  }
 
 
 }

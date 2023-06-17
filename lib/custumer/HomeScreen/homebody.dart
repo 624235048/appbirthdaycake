@@ -99,9 +99,6 @@ class _HomeBodyPageState extends State<HomeBodyPage> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
                             AspectRatio(
                               aspectRatio: 0.90,
                               child: Image.asset(
@@ -175,7 +172,7 @@ class _HomeBodyPageState extends State<HomeBodyPage> {
                                   ],
                                 ),
                                 SizedBox(
-                                  height: 20,
+                                  height: 40,
                                 ),
                                 Expanded(
                                   child: AspectRatio(
@@ -223,7 +220,7 @@ class _HomeBodyPageState extends State<HomeBodyPage> {
                                     height: 10,
                                   ),
                                   Text(
-                                    'Recommended \nCake',
+                                    'Cake Sung Dai \nShop',
                                     style: TextStyle(
                                       fontFamily: 'Bebas',
                                       fontSize: 20,
@@ -288,13 +285,6 @@ class _HomeBodyPageState extends State<HomeBodyPage> {
                             fontSize: 30,
                             color: Colors.pink[200]),
                       ),
-                    ),
-                    SizedBox(
-                      width: 70,
-                    ),
-                    Text(
-                      'see more',
-                      style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(
                       height: 15,

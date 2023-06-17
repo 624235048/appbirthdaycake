@@ -1,12 +1,26 @@
+import 'dart:io';
+
 import 'package:appbirthdaycake/config/approute.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class HomeBodyShopOwner extends StatefulWidget {
+  
   @override
   _HomeBodyShopOwnerState createState() => _HomeBodyShopOwnerState();
 }
 
 class _HomeBodyShopOwnerState extends State<HomeBodyShopOwner> {
+  
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  @override
+  void initState() {
+    aboutNotification();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,6 +235,60 @@ class _HomeBodyShopOwnerState extends State<HomeBodyShopOwner> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<Null> aboutNotification() async {
+    if (Platform.isAndroid) {
+      print('เกี่ยวกับการแจ้งเตือน');
+      FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      await firebaseMessaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      // กำหนดค่า Firebase Messaging ด้วยตัวเลือกของโปรเจกต์ Firebase ของคุณ
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // จัดการข้อความ FCM เมื่อแอปอยู่ใน foreground
+        print('onMessage: $message');
+        // แสดงการแจ้งเตือนเมื่อได้รับข้อความจาก FCM
+        showNotification(message);
+      });
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        // จัดการข้อความ FCM เมื่อแอปถูกเปิดจากสถานะที่ปิดใช้งาน
+        print('onLaunch: $message');
+      });
+
+      //FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler); // เพิ่มเติม: ฟังก์ชันตัวจัดการข้อความในพื้นหลัง
+
+      // กำหนดการตั้งค่าและเรียกใช้งาน plugin ของแจ้งเตือน
+      const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+      final InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    }
+  }
+
+  Future<void> showNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'your_channel_id', // กำหนด ID ของช่องแจ้งเตือนของคุณ
+      'your_channel_name', // กำหนดชื่อของช่องแจ้งเตือนของคุณ// กำหนดคำอธิบายของช่องแจ้งเตือนของคุณ
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0, // กำหนด ID ของการแจ้งเตือน
+      message.notification.title, // ใช้ชื่อในการแจ้งเตือนจาก FCM
+      message.notification.body, // ใช้ข้อความในการแจ้งเตือนจาก FCM
+      platformChannelSpecifics,
+      payload: 'Default_Sound',
     );
   }
 }

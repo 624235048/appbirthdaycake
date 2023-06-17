@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:ui' as ui;
 import 'package:intl/intl.dart';
 import 'package:appbirthdaycake/config/api.dart';
 import 'package:appbirthdaycake/config/approute.dart';
@@ -14,6 +15,7 @@ import 'package:intl/intl.dart';
 class CakeDetail extends StatefulWidget {
   //final CakegeneralModel cakegeneralModel;
   //CakeDetail({Key key, this.cakegeneralModel}) : super(key: key);
+
   @override
   State<CakeDetail> createState() => _CakeDetailState();
 }
@@ -24,8 +26,9 @@ class _CakeDetailState extends State<CakeDetail> {
   Cakens _cn;
   String img;
   String selectedCakeSize;
+  String selectedCakeFlavor;
   String sizeIds;
-  String pricecake ;
+  String pricecake;
   int _quantiy = 0;
   String pickupdate;
   var cake_date = TextEditingController();
@@ -54,6 +57,15 @@ class _CakeDetailState extends State<CakeDetail> {
       DropdownMenuItem(child: Text("5lbs"), value: "5lbs"),
     ];
     return menuItems;
+  }
+
+  List<DropdownMenuItem<String>> get dropdownCake {
+    List<DropdownMenuItem<String>> flavorItems = [
+      DropdownMenuItem(child: Text("ช็อกโกแลต"), value: "ช็อกโกแลต"),
+      DropdownMenuItem(child: Text("วานิลา"), value: "วานิลา"),
+      DropdownMenuItem(child: Text("ผลไม้"), value: "ผลไม้"),
+    ];
+    return flavorItems;
   }
 
   @override
@@ -113,20 +125,79 @@ class _CakeDetailState extends State<CakeDetail> {
                         topRight: Radius.circular(20),
                       )),
                 ),
-              preferredSize: MediaQuery.of(context).size,),
+                preferredSize: ui.Size.fromHeight(0)),
             pinned: true,
             expandedHeight: 300,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                API.CN_IMAGE + _cn.cnImages,
-                width: double.maxFinite,
-                fit: BoxFit.cover,
+              background: Container(
+                color: Colors.pink.shade100,
+                child: Image.network(
+                  API.CN_IMAGE + _cn.cnImages,
+                  width: double.maxFinite,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Column(
               children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Text(
+                        'รายละเอียดเค้ก',
+                        style: TextStyle(
+                          color: Colors.pink,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    _cn.cnDesc,
+                    style: TextStyle(
+                      //color: Colors.pink,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Text(
+                        'รสชาติเค้ก',
+                        style: TextStyle(
+                          color: Colors.pink,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 350,
+                  child: DropdownButtonFormField(
+                    value: selectedCakeFlavor,
+                    items: dropdownCake,
+                    onChanged: (String value) {
+                      setState(() {
+                        selectedCakeFlavor = value;
+                      });
+                    },
+                  ),
+                ),
                 Container(
                   margin: EdgeInsets.only(left: 20, right: 20),
                   child: Row(
@@ -154,7 +225,7 @@ class _CakeDetailState extends State<CakeDetail> {
                         selectedCakeSize = value;
                         switch (selectedCakeSize) {
                           case "2lbs":
-                            pricecake += _cn.cnPrice;
+                            pricecake = _cn.cnPrice;
                             break;
 
                           case "3lbs":
@@ -260,23 +331,23 @@ class _CakeDetailState extends State<CakeDetail> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            if (_quantiy < 20) {
-                              _quantiy++;
-                            }
-                          });
-                        },
-                        child: Icon(Icons.add),
-                      ),
-                      Text("$_quantiy"),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
                             if (_quantiy > 0) {
                               _quantiy--;
                             }
                           });
                         },
                         child: Icon(Icons.remove),
+                      ),
+                      Text("$_quantiy"),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_quantiy < 20) {
+                              _quantiy++;
+                            }
+                          });
+                        },
+                        child: Icon(Icons.add),
                       ),
                     ],
                   ),
@@ -299,7 +370,11 @@ class _CakeDetailState extends State<CakeDetail> {
                     },
                     style: ElevatedButton.styleFrom(
                         primary: Colors.pink[100], shape: StadiumBorder()),
-                    child: Text("Add to Cart"),
+                    child: Text(
+                      pricecake != null
+                          ? "${pricecake.toString()} THB || Add Order"
+                          : "0 THB || Add To Cart",
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -314,50 +389,52 @@ class _CakeDetailState extends State<CakeDetail> {
   }
 
   Future<Null> addOrderToCart() async {
-      String cn_id = _cn.cnId.toString();
-      String cn_img = _cn.cnImages;
-      String cn_size = selectedCakeSize;
-      String date = DateFormat('yyyy-MM-dd ').format(_selectedDate);
-      String cn_text = cake_detail.text;
-      String cn_price = pricecake.toString();
-      int priceInt = int.parse(cn_price);
-      int sumInt = priceInt * _quantiy;
-      String sum = sumInt.toString();
+    String cn_id = _cn.cnId.toString();
+    String cn_img = _cn.cnImages;
+    String cn_size = selectedCakeSize;
+    String date = DateFormat('yyyy-MM-dd ').format(_selectedDate);
+    String pickup = dateController.text;
+    String cn_text = cake_detail.text;
+    String cn_cakeflavor = selectedCakeFlavor;
+    String cn_price = pricecake.toString();
+    int priceInt = int.parse(cn_price);
+    int sumInt = priceInt * _quantiy;
+    String sum = sumInt.toString();
 
-      Map<String, dynamic> map = Map();
-      map['cake_id'] = cn_id;
-      map['cake_size'] = cn_size;
-      map['cake_img'] = cn_img;
-      map['cake_date'] = date;
-      map['cake_text'] = cn_text;
-      map['amount'] = _quantiy.toString();
-      map['price'] = cn_price;
-      map['sum'] = sum;
-      print("price is ==>>> $cn_price");
-      // print('map ==> ${map.toString()}');
-      CartModel cartModel = CartModel.fromJson(map);
+    Map<String, dynamic> map = Map();
+    map['cake_id'] = cn_id;
+    map['cake_size'] = cn_size;
+    map['cake_img'] = cn_img;
+    map['cake_date'] = date;
+    map['pickup_date'] = pickup;
+    map['cake_text'] = cn_text;
+    map['cake_flavor'] = cn_cakeflavor;
+    map['amount'] = _quantiy.toString();
+    map['price'] = cn_price;
+    map['sum'] = sum;
+    print("price is ==>>> $cn_price");
+    // print('map ==> ${map.toString()}');
+    CartModel cartModel = CartModel.fromJson(map);
 
-      var object = await SQLiteHlper().readAllDataFormSQLite();
-      print('object lenght == ${object.length}');
+    var object = await SQLiteHlper().readAllDataFormSQLite();
+    print('object lenght == ${object.length}');
 
-      if (object.length == 0) {
-        await SQLiteHlper().insertDataToSQLite(cartModel).then((value) =>
-        {
-          print('insert Sucess'),
-          normalDialog2(context, "เพิ่มสินค้าในตะกร้า", "สำเร็จ"),
-        });
-      } else {
-        String brandSQLite = object[0].cake_id;
-        if (brandSQLite.isNotEmpty) {
-          await SQLiteHlper().insertDataToSQLite(cartModel).then((value) =>
-          {
+    if (object.length == 0) {
+      await SQLiteHlper().insertDataToSQLite(cartModel).then((value) => {
             print('insert Sucess'),
-            //showToast("Insert Sucess")
+            normalDialog2(context, "เพิ่มสินค้าในตะกร้า", "สำเร็จ"),
           });
-        } else {
-          normalDialog(context, 'รายการสั่งซื้อผิดพลาด !');
-        }
+    } else {
+      String brandSQLite = object[0].cake_id;
+      if (brandSQLite.isNotEmpty) {
+        await SQLiteHlper().insertDataToSQLite(cartModel).then((value) => {
+              print('insert Sucess'),
+              //showToast("Insert Sucess")
+            });
+      } else {
+        normalDialog(context, 'รายการสั่งซื้อผิดพลาด !');
       }
+    }
   }
 
   Widget birthDayFormField() {

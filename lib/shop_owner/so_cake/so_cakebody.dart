@@ -60,6 +60,14 @@ class _SOCakeBodyState extends State<SOCakeBody> {
                                 ),
                               ),
                               Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text('ชื่อเค้ก : '+ cake.cnCakename),
+                                  ],
+                                ),
+                              ),
+                              Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,7 +80,7 @@ class _SOCakeBodyState extends State<SOCakeBody> {
                                       icon: Icon(Icons.edit),
                                       label: Text('Edit'),
                                       style: ElevatedButton.styleFrom(
-                                        primary: Colors.pink.shade100,
+                                        primary: Colors.pink,
                                       ),
                                     ),
                                     ElevatedButton.icon(
@@ -116,6 +124,10 @@ class _SOCakeBodyState extends State<SOCakeBody> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors
+                      .pink.shade100, // สีปุ่มเป็นสีชมพู
+                ),
                 onPressed: () async {
                   Navigator.pop(context);
                   String url =
@@ -132,6 +144,10 @@ class _SOCakeBodyState extends State<SOCakeBody> {
                 ),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors
+                      .pink.shade100, // สีปุ่มเป็นสีชมพู
+                ),
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'ยกเลิก',

@@ -13,6 +13,7 @@ class SQLiteHlper {
   final String cake_img = 'cake_img';
   final String cake_date = 'cake_date';
   final String cake_text = 'cake_text';
+  final String cake_flavor = 'cake_flavor';
   final String amount = 'amount';
   final String price = 'price';
   final String sum = 'sum';
@@ -28,7 +29,7 @@ class SQLiteHlper {
   Future<Null> initDatabase() async {
     await openDatabase(join(await getDatabasesPath(), nameDatabase),
         onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableDatabase ($idColumn INTEGER PRIMARY KEY ,$cake_id TEXT ,$cake_size TEXT,$cake_img TEXT,$cake_date TEXT,$cake_text TEXT, $price TEXT, $amount TEXT,$sum TEXT,$pickup_date TEXT ,$distance TEXT,$transport TEXT)'),
+            'CREATE TABLE $tableDatabase ($idColumn INTEGER PRIMARY KEY ,$cake_id TEXT ,$cake_size TEXT,$cake_img TEXT,$cake_date TEXT,$cake_text TEXT,$cake_flavor TEXT, $price TEXT, $amount TEXT,$sum TEXT,$pickup_date TEXT ,$distance TEXT,$transport TEXT)'),
         version: version);
   }
 

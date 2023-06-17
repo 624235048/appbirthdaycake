@@ -77,8 +77,8 @@ class Style {
   Text showTitleH3(String title) => Text(
     title,
     style: TextStyle(
-        fontSize: 14.0,
-        color: Color(0xfff6b1c5),
+        fontSize: 18.0,
+        color: Color(0xffef366b),
         fontWeight: FontWeight.w600),
   );
 
@@ -136,7 +136,7 @@ class Style {
   );
 
   TextStyle mainh1Title = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );
@@ -146,6 +146,6 @@ class Style {
     color: Colors.black,
   );
 
-
+ String ProfileImage = "assets/images/cupcake.png";
 
 }
